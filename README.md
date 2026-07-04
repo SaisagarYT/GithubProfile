@@ -1,18 +1,42 @@
 # GitHub Profile README Generator
 
-A React + Tailwind CSS application for generating custom GitHub profile READMEs with animated banners, stats cards, and skill badges.
+A React + Tailwind CSS application for generating custom GitHub profile READMEs with animated banners, stats cards, and skill badges. **Features complete theme system that transforms the entire UI!**
 
-## Features
+## ✨ Features
 
-- 🎨 Multiple theme options (Midnight Wave, Glass Aurora, Terminal Hack, Sunset Gradient, Clean Light)
-- 📊 GitHub stats widgets (stats cards, language stats, streak stats, trophies)
-- 🛠️ Tech stack skill selector with 70+ tech icons
-- 🎯 Animated wave banners and typing animations
-- 🔗 Social media badges (LinkedIn, Twitter, Instagram, YouTube, LeetCode, Discord, etc.)
-- 📝 Live markdown preview
-- 💾 Download and copy functionality
-- 🎭 Badge style customization
-- 🐍 Optional contribution snake animation
+### 🎨 Complete Theme System
+- **6 Gorgeous Themes** - Each changes the ENTIRE app appearance
+  - Midnight Wave (Deep blue/purple)
+  - Glass Aurora (Light pastel)
+  - Terminal Hack (Matrix green)
+  - Sunset Gradient (Warm orange/pink)
+  - Ocean Breeze (Cyan/blue)
+  - Forest Mist (Emerald green)
+- **Real-time UI Updates** - Background, panels, text colors all change instantly
+- **Coordinated Design** - Every element matches your selected theme
+
+### 🎭 10 Banner Animation Styles
+- Wave, Soft, Rect, Rounded, Cylinder
+- Slice, Shark, Transparent, Egg, Venom
+- All styles automatically use your theme's colors
+- 60+ unique combinations (6 themes × 10 styles)
+
+### 📊 GitHub Stats & Widgets
+- Stats cards with commits, stars, PRs
+- Top languages card (compact layout)
+- Streak stats counter
+- Trophy achievements
+- Profile view counter
+- Contribution snake animation (optional)
+
+### 🛠️ Additional Features
+- 70+ tech skill icons with search
+- Social media badges (customizable styles)
+- Live markdown preview
+- Typing animation with custom messages
+- Download & copy functionality
+- Custom profile images
+- Fully responsive design
 
 ## Installation
 

@@ -1,7 +1,25 @@
 import { THEMES } from '../data/themes';
 import { createBadge, socialUrl, escapeMarkdown } from './helpers';
 
-export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills) => {
+const createThemedSection = (content, theme, title = '') => {
+  const t = THEMES[theme];
+  if (!t?.preview) return content;
+
+  return `
+<div align="center">
+
+${title ? `<h3 style="color: ${t.preview.headingText}; margin: 0 0 10px 0;">${title}</h3>` : ''}
+
+<div style="background: ${t.preview.sectionBg}; border: 1px solid ${t.preview.borderColor}; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+${content}
+
+</div>
+</div>
+`;
+};
+
+export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills, bannerStyle = 'waving') => {
   const t = THEMES[currentTheme];
   const username = formData.username || 'your-username';
   const name = formData.name || 'Your Name';
@@ -9,7 +27,8 @@ export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills
 
   // Banner
   if (formData.showBanner) {
-    const bannerUrl = `https://capsule-render.vercel.app/api?type=${t.waveType}&color=${encodeURIComponent(t.waveColor)}&height=${t.waveHeight}&section=header&text=${encodeURIComponent(name)}&fontSize=42&fontColor=ffffff&animation=fadeIn&fontAlignY=38`;
+    const waveHeight = bannerStyle === 'transparent' ? 160 : 220;
+    const bannerUrl = `https://capsule-render.vercel.app/api?type=${bannerStyle}&color=${encodeURIComponent(t.waveColor)}&height=${waveHeight}&section=header&text=${encodeURIComponent(name)}&fontSize=42&fontColor=ffffff&animation=fadeIn&fontAlignY=38`;
     lines.push(`<div align="center">`);
     lines.push(`  <img src="${bannerUrl}" width="100%"/>`);
     lines.push(`</div>`);
@@ -57,16 +76,15 @@ export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills
 
   // What's happening section
   const wh = [];
-  if (formData.working) wh.push(`- 🔭 Currently working on **${formData.working}**`);
-  if (formData.learning) wh.push(`- 🌱 Currently learning **${formData.learning}**`);
-  if (formData.collab) wh.push(`- 🤝 Open to collaborate on **${formData.collab}**`);
-  if (formData.askme) wh.push(`- 💬 Ask me about **${formData.askme}**`);
-  if (formData.funfact) wh.push(`- ⚡ Fun fact: ${formData.funfact}`);
+  if (formData.working) wh.push(`🔭 Currently working on **${formData.working}**`);
+  if (formData.learning) wh.push(`🌱 Currently learning **${formData.learning}**`);
+  if (formData.collab) wh.push(`🤝 Open to collaborate on **${formData.collab}**`);
+  if (formData.askme) wh.push(`💬 Ask me about **${formData.askme}**`);
+  if (formData.funfact) wh.push(`⚡ Fun fact: ${formData.funfact}`);
 
   if (wh.length) {
-    lines.push('### 🚀 A bit about me');
-    lines.push('');
-    lines.push(...wh);
+    const whContent = wh.map(line => `<p align="left">${line}</p>`).join('\n');
+    lines.push(createThemedSection(whContent, currentTheme, '🚀 A bit about me'));
     lines.push('');
   }
 
@@ -82,46 +100,39 @@ export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills
   if (formData.s_discord) socials.push(createBadge('Discord', 'discord', '5865F2', socialUrl('discord', formData.s_discord), badgeStyle));
 
   if (socials.length) {
-    lines.push('### 🔗 Connect with me');
-    lines.push('');
-    lines.push(`<p align="left">${socials.join(' ')}</p>`);
+    const socialContent = `<p align="center">${socials.join(' ')}</p>`;
+    lines.push(createThemedSection(socialContent, currentTheme, '🔗 Connect with me'));
     lines.push('');
   }
 
   // Skills
   if (selectedSkills.length) {
-    lines.push('### 🛠️ Tech stack');
-    lines.push('');
-    lines.push(`<p align="left"><img src="https://skillicons.dev/icons?i=${selectedSkills.join(',')}" alt="tech stack icons"/></p>`);
+    const skillsContent = `<p align="center"><img src="https://skillicons.dev/icons?i=${selectedSkills.join(',')}" alt="tech stack icons"/></p>`;
+    lines.push(createThemedSection(skillsContent, currentTheme, '🛠️ Tech Stack'));
     lines.push('');
   }
 
   // Stats
-  const statBlocks = [];
+  const statsContent = [];
   if (formData.showStats) {
-    statBlocks.push(`<img src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=true&count_private=true" alt="GitHub stats" width="49%"/>`);
+    statsContent.push(`<img src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=true&count_private=true" alt="GitHub stats" width="49%"/>`);
   }
   if (formData.showLangs) {
-    statBlocks.push(`<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${t.statsTheme}&hide_border=true" alt="Top languages" width="49%"/>`);
+    statsContent.push(`<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${t.statsTheme}&hide_border=true" alt="Top languages" width="49%"/>`);
   }
-  if (statBlocks.length) {
-    lines.push('### 📊 GitHub stats');
-    lines.push('');
-    lines.push(`<p align="center">`);
-    lines.push(`  ${statBlocks.join('\n  ')}`);
-    lines.push(`</p>`);
-    lines.push('');
+  if (formData.showStreak) {
+    statsContent.push(`<br/><img src="https://streak-stats.demolab.com?user=${username}&theme=${t.statsTheme}&hide_border=true" alt="GitHub streak"/>`);
   }
 
-  if (formData.showStreak) {
-    lines.push(`<p align="center"><img src="https://streak-stats.demolab.com?user=${username}&theme=${t.statsTheme}&hide_border=true" alt="GitHub streak"/></p>`);
+  if (statsContent.length) {
+    const content = `<p align="center">${statsContent.join('\n  ')}</p>`;
+    lines.push(createThemedSection(content, currentTheme, '📊 GitHub Stats'));
     lines.push('');
   }
 
   if (formData.showTrophy) {
-    lines.push('### 🏆 Trophies');
-    lines.push('');
-    lines.push(`<p align="center"><img src="https://github-profile-trophy.vercel.app/?username=${username}&theme=${t.trophyTheme}&column=7&margin-w=12&margin-h=12&no-frame=true" alt="trophies"/></p>`);
+    const trophyContent = `<p align="center"><img src="https://github-profile-trophy.vercel.app/?username=${username}&theme=${t.trophyTheme}&column=7&margin-w=12&margin-h=12&no-frame=true" alt="trophies"/></p>`;
+    lines.push(createThemedSection(trophyContent, currentTheme, '🏆 Trophies'));
     lines.push('');
   }
 

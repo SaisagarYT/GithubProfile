@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { copyToClipboard, downloadFile } from '../utils/helpers';
+import { THEMES } from '../data/themes';
 
-const Editor = ({ markdown }) => {
+const Editor = ({ markdown, currentTheme }) => {
   const [activeTab, setActiveTab] = useState('preview');
   const [copyStatus, setCopyStatus] = useState('');
+  const theme = THEMES[currentTheme] || THEMES.midnight;
 
   const handleCopy = async () => {
     const success = await copyToClipboard(markdown);
@@ -71,12 +73,37 @@ const Editor = ({ markdown }) => {
 
       <div className="relative flex-1">
         {activeTab === 'preview' ? (
-          <div className="p-6 bg-[#0d1117]">
+          <div
+            className="p-6 relative overflow-auto"
+            style={{
+              background: theme.preview.bg,
+              backgroundImage: `radial-gradient(circle at 1px 1px, ${theme.preview.gridDot} 1px, transparent 0)`,
+              backgroundSize: '40px 40px'
+            }}
+          >
             <div
-              className="max-w-225 mx-auto text-[#c9d1d9] leading-relaxed"
-              style={{ fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif' }}
+              className="max-w-225 mx-auto leading-relaxed"
+              style={{
+                fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif',
+                color: theme.preview.text
+              }}
               dangerouslySetInnerHTML={{ __html: renderPreview(markdown) }}
             />
+            <style>{`
+              #previewInner h1, #previewInner h2, #previewInner h3 {
+                color: ${theme.preview.headingText} !important;
+                border-bottom-color: ${theme.preview.borderColor} !important;
+              }
+              #previewInner a {
+                color: ${theme.preview.linkColor} !important;
+              }
+              #previewInner hr {
+                border-top-color: ${theme.preview.borderColor} !important;
+              }
+              #previewInner img {
+                border-radius: 8px;
+              }
+            `}</style>
           </div>
         ) : (
           <div className="p-6">

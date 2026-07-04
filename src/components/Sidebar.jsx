@@ -4,8 +4,9 @@ import Toggle from './Toggle';
 import ThemeSelector from './ThemeSelector';
 import SkillSelector from './SkillSelector';
 import BadgeStylePicker from './BadgeStylePicker';
+import BannerStylePicker from './BannerStylePicker';
 
-const Sidebar = ({ formData, updateField, currentTheme, setCurrentTheme, badgeStyle, setBadgeStyle, selectedSkills, setSelectedSkills }) => {
+const Sidebar = ({ formData, updateField, currentTheme, setCurrentTheme, badgeStyle, setBadgeStyle, selectedSkills, setSelectedSkills, bannerStyle, setBannerStyle }) => {
   return (
     <div className="bg-panel border border-line rounded-[10px] overflow-hidden self-start sticky top-14 max-h-[calc(100vh-76px)] overflow-y-auto">
       <FormSection number="01" title="basic_info" defaultOpen={true}>
@@ -85,11 +86,17 @@ const Sidebar = ({ formData, updateField, currentTheme, setCurrentTheme, badgeSt
 
       <FormSection number="03" title="banner_headline">
         <Toggle
-          label="Animated wave banner"
+          label="Animated banner"
           description="capsule-render header"
           checked={formData.showBanner}
           onChange={(val) => updateField('showBanner', val)}
         />
+        {formData.showBanner && (
+          <div className="mb-3">
+            <label className="block text-[11.5px] text-muted mb-1.5 font-mono">banner style</label>
+            <BannerStylePicker currentStyle={bannerStyle} onChange={setBannerStyle} />
+          </div>
+        )}
         <Toggle
           label="Typing headline"
           description="rotating text under banner"

@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 import Sidebar from './components/Sidebar';
 import Editor from './components/Editor';
 import { buildMarkdown } from './utils/markdown';
+import { THEMES } from './data/themes';
 
 function App() {
   const [formData, setFormData] = useState({
@@ -41,6 +42,7 @@ function App() {
 
   const [currentTheme, setCurrentTheme] = useState('midnight');
   const [badgeStyle, setBadgeStyle] = useState('for-the-badge');
+  const [bannerStyle, setBannerStyle] = useState('waving');
   const [selectedSkills, setSelectedSkills] = useState([
     'js', 'react', 'node', 'mongodb', 'python', 'tensorflow', 'git', 'github', 'tailwind'
   ]);
@@ -48,16 +50,16 @@ function App() {
   const [markdown, setMarkdown] = useState('');
 
   useEffect(() => {
-    const md = buildMarkdown(formData, currentTheme, badgeStyle, selectedSkills);
+    const md = buildMarkdown(formData, currentTheme, badgeStyle, selectedSkills, bannerStyle);
     setMarkdown(md);
-  }, [formData, currentTheme, badgeStyle, selectedSkills]);
+  }, [formData, currentTheme, badgeStyle, selectedSkills, bannerStyle]);
 
   const updateField = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   return (
-    <div className="min-h-screen bg-bg text-text font-sans bg-[linear-gradient(var(--line-soft)_1px,transparent_1px)_0_0/100%_28px,linear-gradient(90deg,var(--line-soft)_1px,transparent_1px)_0_0/28px_100%,var(--bg)] bg-fixed">
+    <div className="min-h-screen bg-bg text-text font-sans bg-[linear-gradient(var(--color-line-soft)_1px,transparent_1px)_0_0/100%_28px,linear-gradient(90deg,var(--color-line-soft)_1px,transparent_1px)_0_0/28px_100%,var(--color-bg)] bg-fixed">
       <TitleBar />
       <Hero />
 
@@ -71,8 +73,10 @@ function App() {
           setBadgeStyle={setBadgeStyle}
           selectedSkills={selectedSkills}
           setSelectedSkills={setSelectedSkills}
+          bannerStyle={bannerStyle}
+          setBannerStyle={setBannerStyle}
         />
-        <Editor markdown={markdown} />
+        <Editor markdown={markdown} currentTheme={currentTheme} />
       </div>
 
       <footer className="max-w-290 mx-auto px-6 py-5 pb-14 font-mono text-[11.5px] text-muted-2 text-center">
