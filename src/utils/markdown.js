@@ -1,16 +1,21 @@
 import { THEMES } from '../data/themes';
 import { createBadge, socialUrl, escapeMarkdown } from './helpers';
 
-const createThemedSection = (content, theme, title = '') => {
+const createThemedSection = (content, theme, title = '', icon = '') => {
   const t = THEMES[theme];
   if (!t?.preview) return content;
 
   return `
 <div align="center">
 
-${title ? `<h3 style="color: ${t.preview.headingText}; margin: 0 0 10px 0;">${title}</h3>` : ''}
+${title ? `
+<div style="margin: 8px 0 4px 0;">
+  ${icon ? `<img src="${icon}" width="22" height="22" style="vertical-align: middle; margin-right: 6px;"/>` : ''}
+  <span style="color: ${t.preview.headingText}; font-weight: bold; font-size: 20px; vertical-align: middle;">${title}</span>
+</div>
+` : ''}
 
-<div style="background: ${t.preview.sectionBg}; border: 1px solid ${t.preview.borderColor}; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: ${t.preview.sectionBg}; border: 1px solid ${t.preview.borderColor}; border-radius: 8px; padding: 12px; margin: 4px 0;">
 
 ${content}
 
@@ -19,7 +24,7 @@ ${content}
 `;
 };
 
-export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills, bannerStyle = 'waving') => {
+export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills, bannerStyle = 'waving', statsLayout = 'default') => {
   const t = THEMES[currentTheme];
   const username = formData.username || 'your-username';
   const name = formData.name || 'Your Name';
@@ -32,10 +37,8 @@ export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills
     lines.push(`<div align="center">`);
     lines.push(`  <img src="${bannerUrl}" width="100%"/>`);
     lines.push(`</div>`);
-    lines.push('');
   } else {
     lines.push(`# Hi, I'm ${name} 👋`);
-    lines.push('');
   }
 
   // Typing animation
@@ -46,7 +49,6 @@ export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills
     lines.push(`<div align="center">`);
     lines.push(`  <img src="${typingUrl}" alt="typing banner"/>`);
     lines.push(`</div>`);
-    lines.push('');
   }
 
   // Custom image
@@ -54,38 +56,32 @@ export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills
     lines.push(`<div align="right">`);
     lines.push(`  <img src="${formData.customImage}" width="140" style="border-radius:50%" alt="${escapeMarkdown(formData.imageAlt || name)}"/>`);
     lines.push(`</div>`);
-    lines.push('');
   }
 
   // Title and bio
   if (formData.title) {
-    lines.push(`### ${formData.title}${formData.location ? `  \n📍 ${formData.location}` : ''}`);
-    lines.push('');
+    const locationIcon = formData.location ? `<img src="https://api.iconify.design/mdi/map-marker.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="16" style="vertical-align: middle;"/> ${formData.location}` : '';
+    lines.push(`<h3 align="center">${formData.title}${locationIcon ? `<br/>${locationIcon}` : ''}</h3>`);
   }
   if (formData.bio) {
-    lines.push(formData.bio);
-    lines.push('');
+    lines.push(`<p align="center">${formData.bio}</p>`);
   }
   if (formData.pronouns) {
-    lines.push(`*Pronouns: ${formData.pronouns}*`);
-    lines.push('');
+    lines.push(`<p align="center"><i>Pronouns: ${formData.pronouns}</i></p>`);
   }
-
-  lines.push('---');
-  lines.push('');
 
   // What's happening section
   const wh = [];
-  if (formData.working) wh.push(`🔭 Currently working on **${formData.working}**`);
-  if (formData.learning) wh.push(`🌱 Currently learning **${formData.learning}**`);
-  if (formData.collab) wh.push(`🤝 Open to collaborate on **${formData.collab}**`);
-  if (formData.askme) wh.push(`💬 Ask me about **${formData.askme}**`);
-  if (formData.funfact) wh.push(`⚡ Fun fact: ${formData.funfact}`);
+  if (formData.working) wh.push(`<img src="https://api.iconify.design/mdi/telescope.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="20" style="vertical-align: middle;"/> Currently working on **${formData.working}**`);
+  if (formData.learning) wh.push(`<img src="https://api.iconify.design/mdi/sprout.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="20" style="vertical-align: middle;"/> Currently learning **${formData.learning}**`);
+  if (formData.collab) wh.push(`<img src="https://api.iconify.design/mdi/handshake.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="20" style="vertical-align: middle;"/> Open to collaborate on **${formData.collab}**`);
+  if (formData.askme) wh.push(`<img src="https://api.iconify.design/mdi/chat.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="20" style="vertical-align: middle;"/> Ask me about **${formData.askme}**`);
+  if (formData.funfact) wh.push(`<img src="https://api.iconify.design/mdi/lightning-bolt.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="20" style="vertical-align: middle;"/> Fun fact: ${formData.funfact}`);
 
   if (wh.length) {
-    const whContent = wh.map(line => `<p align="left">${line}</p>`).join('\n');
-    lines.push(createThemedSection(whContent, currentTheme, '🚀 A bit about me'));
-    lines.push('');
+    const whContent = wh.map(line => `<p align="left" style="margin: 4px 0;">${line}</p>`).join('\n');
+    const iconColor = encodeURIComponent(t.preview.headingText);
+    lines.push(createThemedSection(whContent, currentTheme, 'About Me', `https://api.iconify.design/mdi/account.svg?color=${iconColor}`));
   }
 
   // Socials
@@ -101,39 +97,110 @@ export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills
 
   if (socials.length) {
     const socialContent = `<p align="center">${socials.join(' ')}</p>`;
-    lines.push(createThemedSection(socialContent, currentTheme, '🔗 Connect with me'));
-    lines.push('');
+    const iconColor = encodeURIComponent(t.preview.headingText);
+    lines.push(createThemedSection(socialContent, currentTheme, 'Connect with Me', `https://api.iconify.design/mdi/link-variant.svg?color=${iconColor}`));
   }
 
   // Skills
   if (selectedSkills.length) {
     const skillsContent = `<p align="center"><img src="https://skillicons.dev/icons?i=${selectedSkills.join(',')}" alt="tech stack icons"/></p>`;
-    lines.push(createThemedSection(skillsContent, currentTheme, '🛠️ Tech Stack'));
-    lines.push('');
+    const iconColor = encodeURIComponent(t.preview.headingText);
+    lines.push(createThemedSection(skillsContent, currentTheme, 'Tech Stack', `https://api.iconify.design/mdi/tools.svg?color=${iconColor}`));
   }
 
-  // Stats
-  const statsContent = [];
-  if (formData.showStats) {
-    statsContent.push(`<img src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=true&count_private=true" alt="GitHub stats" width="49%"/>`);
-  }
-  if (formData.showLangs) {
-    statsContent.push(`<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${t.statsTheme}&hide_border=true" alt="Top languages" width="49%"/>`);
-  }
-  if (formData.showStreak) {
-    statsContent.push(`<br/><img src="https://streak-stats.demolab.com?user=${username}&theme=${t.statsTheme}&hide_border=true" alt="GitHub streak"/>`);
-  }
+  // Stats with different layouts
+  if (formData.showStats || formData.showLangs || formData.showStreak) {
+    let statsContent = '';
 
-  if (statsContent.length) {
-    const content = `<p align="center">${statsContent.join('\n  ')}</p>`;
-    lines.push(createThemedSection(content, currentTheme, '📊 GitHub Stats'));
-    lines.push('');
+    switch(statsLayout) {
+      case 'default': // Side by side
+        const sideBySide = [];
+        if (formData.showStats) {
+          sideBySide.push(`<img src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=true&count_private=true" alt="GitHub stats" width="49%"/>`);
+        }
+        if (formData.showLangs) {
+          sideBySide.push(`<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${t.statsTheme}&hide_border=true" alt="Top languages" width="49%"/>`);
+        }
+        if (formData.showStreak) {
+          sideBySide.push(`<br/><br/><img src="https://streak-stats.demolab.com?user=${username}&theme=${t.statsTheme}&hide_border=true" alt="GitHub streak" style="max-width: 100%;"/>`);
+        }
+        statsContent = `<p align="center">${sideBySide.join('\n')}</p>`;
+        break;
+
+      case 'stacked': // All stacked vertically
+        const stacked = [];
+        if (formData.showStats) {
+          stacked.push(`<img src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=true&count_private=true" alt="GitHub stats" style="max-width: 100%; width: 495px;"/>`);
+        }
+        if (formData.showLangs) {
+          stacked.push(`<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${t.statsTheme}&hide_border=true" alt="Top languages" style="max-width: 100%; width: 495px;"/>`);
+        }
+        if (formData.showStreak) {
+          stacked.push(`<img src="https://streak-stats.demolab.com?user=${username}&theme=${t.statsTheme}&hide_border=true" alt="GitHub streak" style="max-width: 100%;"/>`);
+        }
+        statsContent = `<p align="center">${stacked.join('<br/><br/>\n')}</p>`;
+        break;
+
+      case 'compact': // Compact minimal
+        const compact = [];
+        if (formData.showStats) {
+          compact.push(`<img src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=true&count_private=true&hide_title=true&card_width=300" alt="GitHub stats"/>`);
+        }
+        if (formData.showLangs) {
+          compact.push(`<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${t.statsTheme}&hide_border=true&card_width=300" alt="Top languages"/>`);
+        }
+        if (formData.showStreak) {
+          compact.push(`<img src="https://streak-stats.demolab.com?user=${username}&theme=${t.statsTheme}&hide_border=true" alt="GitHub streak" width="350"/>`);
+        }
+        statsContent = `<p align="center">${compact.join('\n')}</p>`;
+        break;
+
+      case 'detailed': // Large detailed cards
+        const detailed = [];
+        if (formData.showStats) {
+          detailed.push(`<img src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=false&count_private=true&include_all_commits=true&line_height=24" alt="GitHub stats" width="100%" style="max-width: 550px;"/>`);
+        }
+        if (formData.showLangs) {
+          detailed.push(`<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=normal&theme=${t.statsTheme}&hide_border=false&langs_count=8" alt="Top languages" width="100%" style="max-width: 550px;"/>`);
+        }
+        if (formData.showStreak) {
+          detailed.push(`<img src="https://streak-stats.demolab.com?user=${username}&theme=${t.statsTheme}&hide_border=false" alt="GitHub streak" width="100%" style="max-width: 550px;"/>`);
+        }
+        statsContent = `<p align="center">${detailed.join('<br/><br/>\n')}</p>`;
+        break;
+
+      case 'grid': // 2x2 grid
+        const grid = [];
+        if (formData.showStats) {
+          grid.push(`<img src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=true&count_private=true" alt="GitHub stats" width="48%"/>`);
+        }
+        if (formData.showLangs) {
+          grid.push(`<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${t.statsTheme}&hide_border=true" alt="Top languages" width="48%"/>`);
+        }
+        if (formData.showStreak) {
+          grid.push(`<br/><img src="https://streak-stats.demolab.com?user=${username}&theme=${t.statsTheme}&hide_border=true" alt="GitHub streak" width="48%"/>`);
+        }
+        // Add activity graph if available
+        if (grid.length > 0) {
+          grid.push(`<img src="https://github-readme-activity-graph.vercel.app/graph?username=${username}&theme=${t.statsTheme}&hide_border=true&area=true" alt="Activity Graph" width="48%"/>`);
+        }
+        statsContent = `<p align="center">${grid.join('\n')}</p>`;
+        break;
+
+      default:
+        statsContent = `<p align="center">Stats layout: ${statsLayout}</p>`;
+    }
+
+    if (statsContent) {
+      const iconColor = encodeURIComponent(t.preview.headingText);
+      lines.push(createThemedSection(statsContent, currentTheme, 'GitHub Stats', `https://api.iconify.design/mdi/chart-bar.svg?color=${iconColor}`));
+    }
   }
 
   if (formData.showTrophy) {
     const trophyContent = `<p align="center"><img src="https://github-profile-trophy.vercel.app/?username=${username}&theme=${t.trophyTheme}&column=7&margin-w=12&margin-h=12&no-frame=true" alt="trophies"/></p>`;
-    lines.push(createThemedSection(trophyContent, currentTheme, '🏆 Trophies'));
-    lines.push('');
+    const iconColor = encodeURIComponent(t.preview.headingText);
+    lines.push(createThemedSection(trophyContent, currentTheme, 'Achievements', `https://api.iconify.design/mdi/trophy.svg?color=${iconColor}`));
   }
 
   if (formData.showSnake) {
@@ -142,12 +209,98 @@ export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills
     lines.push(`<p align="center"><img src="https://raw.githubusercontent.com/${username}/${username}/output/github-contribution-grid-snake.svg" alt="snake animation"/></p>`);
     lines.push('');
     lines.push(`> To make the snake animation actually appear, add the [github-contributions-svg-generator](https://github.com/Platane/snk) action to a repo named \`${username}/${username}\` — one workflow file, no server needed. Details are in that project's README.`);
-    lines.push('');
   }
 
   if (formData.showVisitor) {
     lines.push(`<p align="center"><img src="https://komarev.com/ghpvc/?username=${username}&color=${t.badgeColor}&style=flat&label=Profile+views" alt="visitor badge"/></p>`);
-    lines.push('');
+  }
+
+  // Activity Graph
+  if (formData.showActivity) {
+    const activityContent = `<p align="center"><img src="https://github-readme-activity-graph.vercel.app/graph?username=${username}&theme=${t.statsTheme}&hide_border=true&area=true" alt="Activity Graph" width="100%"/></p>`;
+    const iconColor = encodeURIComponent(t.preview.headingText);
+    lines.push(createThemedSection(activityContent, currentTheme, 'Contribution Activity', `https://api.iconify.design/mdi/chart-line.svg?color=${iconColor}`));
+  }
+
+  // WakaTime Stats
+  if (formData.showWakatime && formData.wakatimeUsername) {
+    const wakatimeContent = `<p align="center"><img src="https://github-readme-stats.vercel.app/api/wakatime?username=${formData.wakatimeUsername}&theme=${t.statsTheme}&hide_border=true&layout=compact" alt="WakaTime Stats" width="100%"/></p>`;
+    const iconColor = encodeURIComponent(t.preview.headingText);
+    lines.push(createThemedSection(wakatimeContent, currentTheme, 'Coding Time', `https://api.iconify.design/mdi/clock-outline.svg?color=${iconColor}`));
+  }
+
+  // Random Dev Quote
+  if (formData.showQuote) {
+    const quoteContent = `<p align="center"><img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=${t.statsTheme === 'default' ? 'light' : 'dark'}" alt="Random Dev Quote"/></p>`;
+    const iconColor = encodeURIComponent(t.preview.headingText);
+    lines.push(createThemedSection(quoteContent, currentTheme, 'Quote of the Day', `https://api.iconify.design/mdi/format-quote-close.svg?color=${iconColor}`));
+  }
+
+  // Random Dev Joke
+  if (formData.showJoke) {
+    const jokeContent = `<p align="center"><img src="https://readme-jokes.vercel.app/api?theme=${t.statsTheme === 'default' ? 'default' : 'dark'}" alt="Jokes Card"/></p>`;
+    const iconColor = encodeURIComponent(t.preview.headingText);
+    lines.push(createThemedSection(jokeContent, currentTheme, 'Dev Humor', `https://api.iconify.design/mdi/emoticon-happy-outline.svg?color=${iconColor}`));
+  }
+
+  // Spotify Now Playing
+  if (formData.showSpotify) {
+    const spotifyContent = `<p align="center"><img src="https://spotify-github-profile.vercel.app/api/view?uid=${username}&cover_image=true&theme=default&show_offline=false&background_color=${t.preview.bg.replace('#', '')}&interchange=false&bar_color=${t.preview.linkColor.replace('#', '')}&bar_color_cover=true" alt="Spotify Now Playing"/></p>
+<p align="center"><small>⚠️ Spotify requires OAuth setup at <a href="https://spotify-github-profile.vercel.app">spotify-github-profile.vercel.app</a> — connect your account first, then it auto-updates.</small></p>`;
+    const iconColor = encodeURIComponent(t.preview.headingText);
+    lines.push(createThemedSection(spotifyContent, currentTheme, 'Now Playing', `https://api.iconify.design/simple-icons/spotify.svg?color=${iconColor}`));
+  }
+
+  // Pinned Repositories
+  if (formData.showPinnedRepos) {
+    const pinnedContent = `<p align="center">
+  <!-- Replace REPO_1 and REPO_2 with your actual repository names -->
+  <a href="https://github.com/${username}?tab=repositories">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=${username}&repo=REPO_1&theme=${t.statsTheme}&hide_border=true" alt="Pinned Repo 1" width="48%"/>
+  </a>
+  <a href="https://github.com/${username}?tab=repositories">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=${username}&repo=REPO_2&theme=${t.statsTheme}&hide_border=true" alt="Pinned Repo 2" width="48%"/>
+  </a>
+</p>
+<p align="center"><sub>✏️ Replace <code>REPO_1</code> and <code>REPO_2</code> above with your actual repository names</sub></p>`;
+    const iconColor = encodeURIComponent(t.preview.headingText);
+    lines.push(createThemedSection(pinnedContent, currentTheme, 'Featured Projects', `https://api.iconify.design/mdi/star-outline.svg?color=${iconColor}`));
+  }
+
+  // Latest Blog Posts
+  if (formData.showBlogPosts && formData.blogUrl) {
+    const blogContent = `<p align="center"><i>📝 Latest posts — auto-updated via GitHub Actions</i></p>
+
+<!-- BLOG-POST-LIST:START -->
+<!-- Posts will appear here after GitHub Action runs -->
+<!-- BLOG-POST-LIST:END -->
+
+<p align="center"><sub>Add the <a href="https://github.com/gautamkrishnar/blog-post-workflow">blog-post-workflow</a> action with feed: <code>${formData.blogUrl}</code></sub></p>`;
+    const iconColor = encodeURIComponent(t.preview.headingText);
+    lines.push(createThemedSection(blogContent, currentTheme, 'Latest Blog Posts', `https://api.iconify.design/mdi/rss.svg?color=${iconColor}`));
+  }
+
+  // Support Section
+  if (formData.showSupport && (formData.supportText || formData.supportLinks)) {
+    let supportContent = '';
+    if (formData.supportText) {
+      supportContent += `<p align="center">${formData.supportText}</p>\n`;
+    }
+    if (formData.supportLinks) {
+      const links = formData.supportLinks.split('\n').filter(Boolean);
+      const badges = links.map(link => {
+        let label = 'Support';
+        let logo = 'buymeacoffee';
+        if (link.includes('buymeacoffee')) { label = 'Buy Me A Coffee'; logo = 'buymeacoffee'; }
+        else if (link.includes('ko-fi')) { label = 'Ko-fi'; logo = 'kofi'; }
+        else if (link.includes('patreon')) { label = 'Patreon'; logo = 'patreon'; }
+        else if (link.includes('paypal')) { label = 'PayPal'; logo = 'paypal'; }
+        return `<a href="${link}"><img src="https://img.shields.io/badge/${label}-${t.badgeColor}?style=for-the-badge&logo=${logo}&logoColor=white" alt="${label}"/></a>`;
+      });
+      supportContent += `<p align="center">${badges.join(' ')}</p>`;
+    }
+    const iconColor = encodeURIComponent(t.preview.headingText);
+    lines.push(createThemedSection(supportContent, currentTheme, 'Support My Work', `https://api.iconify.design/mdi/heart.svg?color=${iconColor}`));
   }
 
   lines.push('---');

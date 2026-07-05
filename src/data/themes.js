@@ -118,6 +118,106 @@ export const THEMES = {
       borderColor: '#11998e',
       gridDot: '#1e4d3a'
     }
+  },
+  marine: {
+    name: 'Marine Blue',
+    desc: 'professional deep blue',
+    swatch: 'linear-gradient(135deg,#1e3a8a,#3b82f6,#60a5fa)',
+    waveColor: '1e3a8a,3b82f6,60a5fa',
+    statsTheme: 'blue-green',
+    trophyTheme: 'flat',
+    typingColor: '60a5fa',
+    badgeColor: '3b82f6',
+    preview: {
+      bg: '#0f1729',
+      sectionBg: 'linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(30,58,138,0.1) 100%)',
+      headerBg: 'linear-gradient(to right, #1e3a8a, #3b82f6)',
+      text: '#e0e7ff',
+      headingText: '#60a5fa',
+      linkColor: '#3b82f6',
+      borderColor: '#1e3a8a',
+      gridDot: '#1e3a8a'
+    }
+  },
+  amethyst: {
+    name: 'Amethyst Purple',
+    desc: 'vibrant purple & magenta',
+    swatch: 'linear-gradient(135deg,#7e22ce,#a855f7,#c084fc)',
+    waveColor: '7e22ce,a855f7,c084fc',
+    statsTheme: 'radical',
+    trophyTheme: 'onestar',
+    typingColor: 'c084fc',
+    badgeColor: 'a855f7',
+    preview: {
+      bg: '#1a0b2e',
+      sectionBg: 'linear-gradient(135deg, rgba(168,85,247,0.12) 0%, rgba(126,34,206,0.12) 100%)',
+      headerBg: 'linear-gradient(to right, #7e22ce, #a855f7)',
+      text: '#f3e8ff',
+      headingText: '#c084fc',
+      linkColor: '#a855f7',
+      borderColor: '#7e22ce',
+      gridDot: '#7e22ce'
+    }
+  },
+  apricot: {
+    name: 'Apricot Coral',
+    desc: 'warm coral & orange',
+    swatch: 'linear-gradient(135deg,#fb923c,#f97316,#ea580c)',
+    waveColor: 'fb923c,f97316,ea580c',
+    statsTheme: 'dark',
+    trophyTheme: 'juicyfresh',
+    typingColor: 'fb923c',
+    badgeColor: 'f97316',
+    preview: {
+      bg: '#1c0f0a',
+      sectionBg: 'linear-gradient(135deg, rgba(249,115,22,0.12) 0%, rgba(251,146,60,0.12) 100%)',
+      headerBg: 'linear-gradient(to right, #ea580c, #fb923c)',
+      text: '#fff7ed',
+      headingText: '#fb923c',
+      linkColor: '#f97316',
+      borderColor: '#ea580c',
+      gridDot: '#ea580c'
+    }
+  },
+  arctic: {
+    name: 'Arctic White',
+    desc: 'clean minimal white',
+    swatch: 'linear-gradient(135deg,#f8fafc,#e2e8f0,#cbd5e1)',
+    waveColor: 'f8fafc,e2e8f0,cbd5e1',
+    statsTheme: 'default',
+    trophyTheme: 'flat',
+    typingColor: '475569',
+    badgeColor: '64748b',
+    preview: {
+      bg: '#ffffff',
+      sectionBg: 'linear-gradient(135deg, rgba(226,232,240,0.3) 0%, rgba(248,250,252,0.3) 100%)',
+      headerBg: 'linear-gradient(to right, #e2e8f0, #cbd5e1)',
+      text: '#1e293b',
+      headingText: '#475569',
+      linkColor: '#3b82f6',
+      borderColor: '#cbd5e1',
+      gridDot: '#e2e8f0'
+    }
+  },
+  slate: {
+    name: 'Slate Professional',
+    desc: 'modern slate & gray',
+    swatch: 'linear-gradient(135deg,#1e293b,#334155,#475569)',
+    waveColor: '1e293b,334155,475569',
+    statsTheme: 'dark',
+    trophyTheme: 'nord',
+    typingColor: '94a3b8',
+    badgeColor: '475569',
+    preview: {
+      bg: '#0f172a',
+      sectionBg: 'linear-gradient(135deg, rgba(51,65,85,0.15) 0%, rgba(30,41,59,0.15) 100%)',
+      headerBg: 'linear-gradient(to right, #1e293b, #475569)',
+      text: '#e2e8f0',
+      headingText: '#94a3b8',
+      linkColor: '#60a5fa',
+      borderColor: '#334155',
+      gridDot: '#1e293b'
+    }
   }
 };
 
@@ -135,6 +235,14 @@ export const BANNER_STYLES = [
 ];
 
 export const BADGE_STYLES = ['for-the-badge', 'flat-square', 'plastic'];
+
+export const STATS_LAYOUTS = [
+  { id: 'default', name: 'Side by Side', desc: 'Stats & langs side by side' },
+  { id: 'stacked', name: 'Stacked', desc: 'All stats stacked vertically' },
+  { id: 'compact', name: 'Compact', desc: 'Minimal compact view' },
+  { id: 'detailed', name: 'Detailed', desc: 'Large detailed cards' },
+  { id: 'grid', name: 'Grid', desc: '2x2 grid layout' }
+];
 
 export const SKILLS = [
   'js', 'ts', 'html', 'css', 'react', 'next', 'vue', 'angular', 'node', 'express',

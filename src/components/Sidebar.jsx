@@ -5,8 +5,9 @@ import ThemeSelector from './ThemeSelector';
 import SkillSelector from './SkillSelector';
 import BadgeStylePicker from './BadgeStylePicker';
 import BannerStylePicker from './BannerStylePicker';
+import StatsLayoutPicker from './StatsLayoutPicker';
 
-const Sidebar = ({ formData, updateField, currentTheme, setCurrentTheme, badgeStyle, setBadgeStyle, selectedSkills, setSelectedSkills, bannerStyle, setBannerStyle }) => {
+const Sidebar = ({ formData, updateField, currentTheme, setCurrentTheme, badgeStyle, setBadgeStyle, selectedSkills, setSelectedSkills, bannerStyle, setBannerStyle, statsLayout, setStatsLayout }) => {
   return (
     <div className="bg-panel border border-line rounded-[10px] overflow-hidden self-start sticky top-14 max-h-[calc(100vh-76px)] overflow-y-auto">
       <FormSection number="01" title="basic_info" defaultOpen={true}>
@@ -123,6 +124,10 @@ const Sidebar = ({ formData, updateField, currentTheme, setCurrentTheme, badgeSt
       </FormSection>
 
       <FormSection number="06" title="stats_widgets">
+        <div className="mb-3">
+          <label className="block text-[11.5px] text-muted mb-1.5 font-mono">stats layout</label>
+          <StatsLayoutPicker currentLayout={statsLayout} onChange={setStatsLayout} />
+        </div>
         <Toggle
           label="GitHub stats card"
           description="commits, stars, PRs"
@@ -159,6 +164,26 @@ const Sidebar = ({ formData, updateField, currentTheme, setCurrentTheme, badgeSt
           checked={formData.showSnake}
           onChange={(val) => updateField('showSnake', val)}
         />
+        <Toggle
+          label="Activity graph"
+          description="contribution activity over time"
+          checked={formData.showActivity}
+          onChange={(val) => updateField('showActivity', val)}
+        />
+        <Toggle
+          label="WakaTime stats"
+          description="coding time tracker"
+          checked={formData.showWakatime}
+          onChange={(val) => updateField('showWakatime', val)}
+        />
+        {formData.showWakatime && (
+          <FormInput
+            label="wakatime username"
+            value={formData.wakatimeUsername}
+            onChange={(val) => updateField('wakatimeUsername', val)}
+            placeholder="your-wakatime-username"
+          />
+        )}
       </FormSection>
 
       <FormSection number="07" title="socials_and_badges">
@@ -218,7 +243,76 @@ const Sidebar = ({ formData, updateField, currentTheme, setCurrentTheme, badgeSt
         />
       </FormSection>
 
-      <FormSection number="08" title="media">
+      <FormSection number="08" title="extra_content">
+        <Toggle
+          label="Random dev quote"
+          description="inspirational programming quotes"
+          checked={formData.showQuote}
+          onChange={(val) => updateField('showQuote', val)}
+        />
+        <Toggle
+          label="Random dev joke"
+          description="programming humor"
+          checked={formData.showJoke}
+          onChange={(val) => updateField('showJoke', val)}
+        />
+        <Toggle
+          label="Spotify now playing"
+          description="show current spotify track"
+          checked={formData.showSpotify}
+          onChange={(val) => updateField('showSpotify', val)}
+        />
+        <Toggle
+          label="Pinned repositories"
+          description="showcase your top repos"
+          checked={formData.showPinnedRepos}
+          onChange={(val) => updateField('showPinnedRepos', val)}
+        />
+        <Toggle
+          label="Latest blog posts"
+          description="from dev.to, medium, hashnode"
+          checked={formData.showBlogPosts}
+          onChange={(val) => updateField('showBlogPosts', val)}
+        />
+        {formData.showBlogPosts && (
+          <FormInput
+            label="blog RSS feed URL"
+            type="url"
+            value={formData.blogUrl}
+            onChange={(val) => updateField('blogUrl', val)}
+            placeholder="https://dev.to/feed/username"
+          />
+        )}
+      </FormSection>
+
+      <FormSection number="09" title="support">
+        <Toggle
+          label="Show support section"
+          description="buy me a coffee, sponsor, etc"
+          checked={formData.showSupport}
+          onChange={(val) => updateField('showSupport', val)}
+        />
+        {formData.showSupport && (
+          <>
+            <FormInput
+              label="support message"
+              type="textarea"
+              value={formData.supportText}
+              onChange={(val) => updateField('supportText', val)}
+              placeholder="If you like my work, consider supporting me!"
+            />
+            <FormInput
+              label="support links (one per line)"
+              type="textarea"
+              value={formData.supportLinks}
+              onChange={(val) => updateField('supportLinks', val)}
+              placeholder="https://buymeacoffee.com/username&#10;https://ko-fi.com/username"
+            />
+          </>
+        )}
+      </FormSection>
+
+      <FormSection number="10" title="media">
         <FormInput
           label="profile / banner image URL"
           type="url"
@@ -227,7 +321,7 @@ const Sidebar = ({ formData, updateField, currentTheme, setCurrentTheme, badgeSt
           placeholder="https://raw.githubusercontent.com/you/repo/main/photo.png"
         />
         <small className="text-muted-2 text-[11px] block -mt-2 mb-2">
-          (optional — image must already be hosted, e.g. in your repo or imgur)
+          (optional — image must already be hosted)
         </small>
         <FormInput
           label="image caption / alt text"

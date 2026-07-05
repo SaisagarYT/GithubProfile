@@ -20,14 +20,20 @@ const Editor = ({ markdown, currentTheme }) => {
   };
 
   const renderPreview = (md) => {
-    return md
-      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-      .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-      .replace(/\*(.*?)\*/g, '<i>$1</i>')
-      .replace(/^> (.*$)/gim, '<blockquote style="border-left:3px solid #30363d;margin:0;padding:2px 12px;color:#8b949e;">$1</blockquote>')
-      .replace(/\n\n/g, '<br/><br/>');
+    // Split into HTML-block vs plain-text segments so we don't inject <br/> inside <div> structures
+    const htmlBlockRe = /(<(?:div|p|h[1-6]|ul|ol|li|blockquote|hr|img|a|span|b|i|br)[^>]*>[\s\S]*?<\/(?:div|p|h[1-6]|ul|ol|li|blockquote|a|span|b|i)>|<(?:img|br|hr)[^>]*\/?>)/gi;
+    const parts = md.split(htmlBlockRe);
+    return parts.map((part) => {
+      if (/^</.test(part.trim())) return part;
+      return part
+        .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+        .replace(/\*(.*?)\*/g, '<i>$1</i>')
+        .replace(/^> (.*$)/gm, '<blockquote style="border-left:3px solid #30363d;margin:0;padding:2px 12px;color:#8b949e;">$1</blockquote>')
+        .replace(/\n\n/g, '<br/>');
+    }).join('');
   };
 
   return (
@@ -82,6 +88,7 @@ const Editor = ({ markdown, currentTheme }) => {
             }}
           >
             <div
+              id="previewInner"
               className="max-w-225 mx-auto leading-relaxed"
               style={{
                 fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif',
@@ -102,6 +109,7 @@ const Editor = ({ markdown, currentTheme }) => {
               }
               #previewInner img {
                 border-radius: 8px;
+                max-width: 100%;
               }
             `}</style>
           </div>

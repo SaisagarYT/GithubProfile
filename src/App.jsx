@@ -28,6 +28,18 @@ function App() {
     showTrophy: true,
     showVisitor: true,
     showSnake: false,
+    showActivity: false,
+    showWakatime: false,
+    wakatimeUsername: '',
+    showSpotify: false,
+    showQuote: false,
+    showJoke: false,
+    showPinnedRepos: false,
+    showBlogPosts: false,
+    blogUrl: '',
+    showSupport: false,
+    supportText: '',
+    supportLinks: '',
     s_email: '',
     s_linkedin: '',
     s_twitter: '',
@@ -43,6 +55,7 @@ function App() {
   const [currentTheme, setCurrentTheme] = useState('midnight');
   const [badgeStyle, setBadgeStyle] = useState('for-the-badge');
   const [bannerStyle, setBannerStyle] = useState('waving');
+  const [statsLayout, setStatsLayout] = useState('default');
   const [selectedSkills, setSelectedSkills] = useState([
     'js', 'react', 'node', 'mongodb', 'python', 'tensorflow', 'git', 'github', 'tailwind'
   ]);
@@ -50,9 +63,9 @@ function App() {
   const [markdown, setMarkdown] = useState('');
 
   useEffect(() => {
-    const md = buildMarkdown(formData, currentTheme, badgeStyle, selectedSkills, bannerStyle);
+    const md = buildMarkdown(formData, currentTheme, badgeStyle, selectedSkills, bannerStyle, statsLayout);
     setMarkdown(md);
-  }, [formData, currentTheme, badgeStyle, selectedSkills, bannerStyle]);
+  }, [formData, currentTheme, badgeStyle, selectedSkills, bannerStyle, statsLayout]);
 
   const updateField = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -75,6 +88,8 @@ function App() {
           setSelectedSkills={setSelectedSkills}
           bannerStyle={bannerStyle}
           setBannerStyle={setBannerStyle}
+          statsLayout={statsLayout}
+          setStatsLayout={setStatsLayout}
         />
         <Editor markdown={markdown} currentTheme={currentTheme} />
       </div>
