@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0d1117"/>
+  <rect x="0" y="0" width="1200" height="4" fill="#863bff"/>
+  <!-- grid dots -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#302b63" opacity="0.6"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <!-- left accent bar -->
+  <rect x="80" y="160" width="4" height="310" fill="#863bff" rx="2"/>
+  <!-- headline -->
+  <text x="112" y="230" font-family="monospace" font-size="56" font-weight="800" fill="#e6edf3">Build your GitHub</text>
+  <text x="112" y="300" font-family="monospace" font-size="56" font-weight="800" fill="#e6edf3">profile <tspan fill="#863bff">README</tspan></text>
+  <text x="112" y="370" font-family="monospace" font-size="56" font-weight="800" fill="#e6edf3">in seconds.</text>
+  <!-- sub -->
+  <text x="112" y="420" font-family="monospace" font-size="22" fill="#8b949e">11 themes · animated banners · stats cards · skill icons</text>
+  <text x="112" y="452" font-family="monospace" font-size="22" fill="#8b949e">no backend · no login · pure markdown</text>
+  <!-- badge -->
+  <rect x="112" y="490" width="220" height="44" rx="8" fill="#863bff" opacity="0.15"/>
+  <rect x="112" y="490" width="220" height="44" rx="8" fill="none" stroke="#863bff" stroke-width="1.5"/>
+  <text x="222" y="518" font-family="monospace" font-size="18" fill="#863bff" text-anchor="middle">README.builder</text>
+  <!-- right side decorative code block -->
+  <rect x="700" y="140" width="420" height="340" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <rect x="700" y="140" width="420" height="36" rx="12" fill="#21262d"/>
+  <rect x="700" y="164" width="420" height="12" fill="#21262d"/>
+  <circle cx="724" cy="158" r="6" fill="#ff5f57"/>
+  <circle cx="744" cy="158" r="6" fill="#ffbd2e"/>
+  <circle cx="764" cy="158" r="6" fill="#28ca41"/>
+  <text x="730" y="206" font-family="monospace" font-size="13" fill="#8b949e">![Banner](capsule-render.vercel.app/...</text>
+  <text x="730" y="228" font-family="monospace" font-size="13" fill="#79c0ff">## About Me</text>
+  <text x="730" y="250" font-family="monospace" font-size="13" fill="#8b949e">![Stats](github-readme-stats-fast...</text>
+  <text x="730" y="272" font-family="monospace" font-size="13" fill="#8b949e">![Streak](streak-stats.demolab.com...</text>
+  <text x="730" y="294" font-family="monospace" font-size="13" fill="#56d364">![Skills](skillicons.dev/icons?i=...</text>
+  <text x="730" y="316" font-family="monospace" font-size="13" fill="#8b949e">[![LinkedIn](shields.io/badge/...</text>
+  <text x="730" y="338" font-family="monospace" font-size="13" fill="#79c0ff">## GitHub Stats</text>
+  <text x="730" y="360" font-family="monospace" font-size="13" fill="#8b949e">![Activity](github-readme-activity...</text>
+  <text x="730" y="382" font-family="monospace" font-size="13" fill="#8b949e">![Trophy](github-profile-summary...</text>
+  <text x="730" y="410" font-family="monospace" font-size="13" fill="#863bff">● auto-generated · paste into README.md</text>
+</svg>

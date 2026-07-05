@@ -1,0 +1,17 @@
+{
+  "name": "README.builder — GitHub Profile Generator",
+  "short_name": "README.builder",
+  "description": "Build a stunning GitHub profile README in seconds. 11 themes, animated banners, skill icons, stats cards. Pure markdown.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
