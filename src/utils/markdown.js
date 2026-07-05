@@ -73,10 +73,10 @@ export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills
 
   // What's happening section
   const wh = [];
-  if (formData.working) wh.push(`<img src="https://api.iconify.design/mdi/telescope.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="20" style="vertical-align: middle;"/> Currently working on **${formData.working}**`);
-  if (formData.learning) wh.push(`<img src="https://api.iconify.design/mdi/sprout.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="20" style="vertical-align: middle;"/> Currently learning **${formData.learning}**`);
-  if (formData.collab) wh.push(`<img src="https://api.iconify.design/mdi/handshake.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="20" style="vertical-align: middle;"/> Open to collaborate on **${formData.collab}**`);
-  if (formData.askme) wh.push(`<img src="https://api.iconify.design/mdi/chat.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="20" style="vertical-align: middle;"/> Ask me about **${formData.askme}**`);
+  if (formData.working) wh.push(`<img src="https://api.iconify.design/mdi/telescope.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="20" style="vertical-align: middle;"/> Currently working on <strong>${formData.working}</strong>`);
+  if (formData.learning) wh.push(`<img src="https://api.iconify.design/mdi/sprout.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="20" style="vertical-align: middle;"/> Currently learning <strong>${formData.learning}</strong>`);
+  if (formData.collab) wh.push(`<img src="https://api.iconify.design/mdi/handshake.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="20" style="vertical-align: middle;"/> Open to collaborate on <strong>${formData.collab}</strong>`);
+  if (formData.askme) wh.push(`<img src="https://api.iconify.design/mdi/chat.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="20" style="vertical-align: middle;"/> Ask me about <strong>${formData.askme}</strong>`);
   if (formData.funfact) wh.push(`<img src="https://api.iconify.design/mdi/lightning-bolt.svg?color=${encodeURIComponent(t.preview.linkColor)}" width="20" style="vertical-align: middle;"/> Fun fact: ${formData.funfact}`);
 
   if (wh.length) {
