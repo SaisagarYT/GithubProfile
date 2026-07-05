@@ -33,7 +33,8 @@ export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills
   // Banner
   if (formData.showBanner) {
     const waveHeight = bannerStyle === 'transparent' ? 160 : 220;
-    const bannerUrl = `https://capsule-render.vercel.app/api?type=${bannerStyle}&color=${encodeURIComponent(t.waveColor)}&height=${waveHeight}&section=header&text=${encodeURIComponent(name)}&fontSize=42&fontColor=ffffff&animation=fadeIn&fontAlignY=38`;
+    const fontColor = t.bannerFontColor || 'ffffff';
+    const bannerUrl = `https://capsule-render.vercel.app/api?type=${bannerStyle}&color=${t.waveColor}&height=${waveHeight}&section=header&text=${encodeURIComponent(name)}&fontSize=42&fontColor=${fontColor}&animation=fadeIn&fontAlignY=38`;
     lines.push(`<div align="center">`);
     lines.push(`  <img src="${bannerUrl}" width="100%"/>`);
     lines.push(`</div>`);
@@ -112,83 +113,61 @@ export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills
   if (formData.showStats || formData.showLangs || formData.showStreak) {
     let statsContent = '';
 
+    // All cards use width=495 on the API so SVGs are the same size before scaling
+    const statsUrl = `https://github-readme-stats-fast.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=true&count_private=true&card_width=495`;
+    const langsUrl = `https://github-readme-stats-fast.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${t.statsTheme}&hide_border=true&card_width=495`;
+    const streakUrl = `https://streak-stats.demolab.com?user=${username}&theme=${t.streakTheme}&hide_border=true`;
+
     switch(statsLayout) {
-      case 'default': // Side by side
-        const sideBySide = [];
-        if (formData.showStats) {
-          sideBySide.push(`<img src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=true&count_private=true" alt="GitHub stats" width="49%"/>`);
-        }
-        if (formData.showLangs) {
-          sideBySide.push(`<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${t.statsTheme}&hide_border=true" alt="Top languages" width="49%"/>`);
-        }
-        if (formData.showStreak) {
-          sideBySide.push(`<br/><br/><img src="https://streak-stats.demolab.com?user=${username}&theme=${t.statsTheme}&hide_border=true" alt="GitHub streak" style="max-width: 100%;"/>`);
-        }
-        statsContent = `<p align="center">${sideBySide.join('\n')}</p>`;
+      case 'default': { // Stats + langs side by side, streak full width below
+        const parts = [];
+        if (formData.showStats) parts.push(`<img src="${statsUrl}" alt="GitHub stats" width="49%"/>`);
+        if (formData.showLangs) parts.push(`<img src="${langsUrl}" alt="Top languages" width="49%"/>`);
+        const streakLine = formData.showStreak ? `<br/><img src="${streakUrl}" alt="GitHub streak" width="100%"/>` : '';
+        statsContent = `<p align="center">${parts.join('\n')}${streakLine}</p>`;
         break;
+      }
 
-      case 'stacked': // All stacked vertically
-        const stacked = [];
-        if (formData.showStats) {
-          stacked.push(`<img src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=true&count_private=true" alt="GitHub stats" style="max-width: 100%; width: 495px;"/>`);
-        }
-        if (formData.showLangs) {
-          stacked.push(`<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${t.statsTheme}&hide_border=true" alt="Top languages" style="max-width: 100%; width: 495px;"/>`);
-        }
-        if (formData.showStreak) {
-          stacked.push(`<img src="https://streak-stats.demolab.com?user=${username}&theme=${t.statsTheme}&hide_border=true" alt="GitHub streak" style="max-width: 100%;"/>`);
-        }
-        statsContent = `<p align="center">${stacked.join('<br/><br/>\n')}</p>`;
+      case 'stacked': { // All stacked, all same width
+        const parts = [];
+        if (formData.showStats) parts.push(`<img src="${statsUrl}" alt="GitHub stats" width="100%"/>`);
+        if (formData.showLangs) parts.push(`<img src="${langsUrl}" alt="Top languages" width="100%"/>`);
+        if (formData.showStreak) parts.push(`<img src="${streakUrl}" alt="GitHub streak" width="100%"/>`);
+        statsContent = `<p align="center">${parts.join('<br/>\n')}</p>`;
         break;
+      }
 
-      case 'compact': // Compact minimal
-        const compact = [];
-        if (formData.showStats) {
-          compact.push(`<img src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=true&count_private=true&hide_title=true&card_width=300" alt="GitHub stats"/>`);
-        }
-        if (formData.showLangs) {
-          compact.push(`<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${t.statsTheme}&hide_border=true&card_width=300" alt="Top languages"/>`);
-        }
-        if (formData.showStreak) {
-          compact.push(`<img src="https://streak-stats.demolab.com?user=${username}&theme=${t.statsTheme}&hide_border=true" alt="GitHub streak" width="350"/>`);
-        }
-        statsContent = `<p align="center">${compact.join('\n')}</p>`;
+      case 'compact': { // 3 cards in a row
+        const parts = [];
+        if (formData.showStats) parts.push(`<img src="${statsUrl}" alt="GitHub stats" width="32%"/>`);
+        if (formData.showLangs) parts.push(`<img src="${langsUrl}" alt="Top languages" width="32%"/>`);
+        if (formData.showStreak) parts.push(`<img src="${streakUrl}" alt="GitHub streak" width="32%"/>`);
+        statsContent = `<p align="center">${parts.join('\n')}</p>`;
         break;
+      }
 
-      case 'detailed': // Large detailed cards
-        const detailed = [];
-        if (formData.showStats) {
-          detailed.push(`<img src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=false&count_private=true&include_all_commits=true&line_height=24" alt="GitHub stats" width="100%" style="max-width: 550px;"/>`);
-        }
-        if (formData.showLangs) {
-          detailed.push(`<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=normal&theme=${t.statsTheme}&hide_border=false&langs_count=8" alt="Top languages" width="100%" style="max-width: 550px;"/>`);
-        }
-        if (formData.showStreak) {
-          detailed.push(`<img src="https://streak-stats.demolab.com?user=${username}&theme=${t.statsTheme}&hide_border=false" alt="GitHub streak" width="100%" style="max-width: 550px;"/>`);
-        }
-        statsContent = `<p align="center">${detailed.join('<br/><br/>\n')}</p>`;
+      case 'detailed': { // Full-width cards stacked
+        const parts = [];
+        if (formData.showStats) parts.push(`<img src="https://github-readme-stats-fast.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=true&count_private=true&include_all_commits=true&line_height=24&card_width=600" alt="GitHub stats" width="100%"/>`);
+        if (formData.showLangs) parts.push(`<img src="https://github-readme-stats-fast.vercel.app/api/top-langs/?username=${username}&layout=normal&theme=${t.statsTheme}&hide_border=true&langs_count=8&card_width=600" alt="Top languages" width="100%"/>`);
+        if (formData.showStreak) parts.push(`<img src="https://streak-stats.demolab.com?user=${username}&theme=${t.streakTheme}&hide_border=true" alt="GitHub streak" width="100%"/>`);
+        statsContent = `<p align="center">${parts.join('<br/>\n')}</p>`;
         break;
+      }
 
-      case 'grid': // 2x2 grid
-        const grid = [];
-        if (formData.showStats) {
-          grid.push(`<img src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${t.statsTheme}&hide_border=true&count_private=true" alt="GitHub stats" width="48%"/>`);
-        }
-        if (formData.showLangs) {
-          grid.push(`<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${t.statsTheme}&hide_border=true" alt="Top languages" width="48%"/>`);
-        }
-        if (formData.showStreak) {
-          grid.push(`<br/><img src="https://streak-stats.demolab.com?user=${username}&theme=${t.statsTheme}&hide_border=true" alt="GitHub streak" width="48%"/>`);
-        }
-        // Add activity graph if available
-        if (grid.length > 0) {
-          grid.push(`<img src="https://github-readme-activity-graph.vercel.app/graph?username=${username}&theme=${t.statsTheme}&hide_border=true&area=true" alt="Activity Graph" width="48%"/>`);
-        }
-        statsContent = `<p align="center">${grid.join('\n')}</p>`;
+      case 'grid': { // 2x2 grid — stats+langs top row, streak+activity bottom row
+        const top = [];
+        const bottom = [];
+        if (formData.showStats) top.push(`<img src="${statsUrl}" alt="GitHub stats" width="49%"/>`);
+        if (formData.showLangs) top.push(`<img src="${langsUrl}" alt="Top languages" width="49%"/>`);
+        if (formData.showStreak) bottom.push(`<img src="${streakUrl}" alt="GitHub streak" width="49%"/>`);
+        bottom.push(`<img src="https://github-readme-activity-graph.vercel.app/graph?username=${username}&theme=${t.activityTheme}&hide_border=true&area=true" alt="Activity Graph" width="49%"/>`);
+        statsContent = `<p align="center">${[...top, ...(top.length && bottom.length ? ['<br/>'] : []), ...bottom].join('\n')}</p>`;
         break;
+      }
 
       default:
-        statsContent = `<p align="center">Stats layout: ${statsLayout}</p>`;
+        statsContent = '';
     }
 
     if (statsContent) {
@@ -198,7 +177,11 @@ export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills
   }
 
   if (formData.showTrophy) {
-    const trophyContent = `<p align="center"><img src="https://github-profile-trophy.vercel.app/?username=${username}&theme=${t.trophyTheme}&column=7&margin-w=12&margin-h=12&no-frame=true" alt="trophies"/></p>`;
+    const trophyContent = `<p align="center">
+  <img src="https://github-profile-summary-cards.vercel.app/api/cards/stats?username=${username}&theme=${t.trophyTheme}" alt="Stats" width="32%"/>
+  <img src="https://github-profile-summary-cards.vercel.app/api/cards/repos-per-language?username=${username}&theme=${t.trophyTheme}" alt="Top Languages" width="32%"/>
+  <img src="https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=${username}&theme=${t.trophyTheme}&utcOffset=5.5" alt="Productive Time" width="32%"/>
+</p>`;
     const iconColor = encodeURIComponent(t.preview.headingText);
     lines.push(createThemedSection(trophyContent, currentTheme, 'Achievements', `https://api.iconify.design/mdi/trophy.svg?color=${iconColor}`));
   }
@@ -217,14 +200,14 @@ export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills
 
   // Activity Graph
   if (formData.showActivity) {
-    const activityContent = `<p align="center"><img src="https://github-readme-activity-graph.vercel.app/graph?username=${username}&theme=${t.statsTheme}&hide_border=true&area=true" alt="Activity Graph" width="100%"/></p>`;
+    const activityContent = `<p align="center"><img src="https://github-readme-activity-graph.vercel.app/graph?username=${username}&theme=${t.activityTheme}&hide_border=true&area=true" alt="Activity Graph" width="100%"/></p>`;
     const iconColor = encodeURIComponent(t.preview.headingText);
     lines.push(createThemedSection(activityContent, currentTheme, 'Contribution Activity', `https://api.iconify.design/mdi/chart-line.svg?color=${iconColor}`));
   }
 
   // WakaTime Stats
   if (formData.showWakatime && formData.wakatimeUsername) {
-    const wakatimeContent = `<p align="center"><img src="https://github-readme-stats.vercel.app/api/wakatime?username=${formData.wakatimeUsername}&theme=${t.statsTheme}&hide_border=true&layout=compact" alt="WakaTime Stats" width="100%"/></p>`;
+    const wakatimeContent = `<p align="center"><img src="https://github-readme-stats-fast.vercel.app/api/wakatime?username=${formData.wakatimeUsername}&theme=${t.statsTheme}&hide_border=true&layout=compact" alt="WakaTime Stats" width="100%"/></p>`;
     const iconColor = encodeURIComponent(t.preview.headingText);
     lines.push(createThemedSection(wakatimeContent, currentTheme, 'Coding Time', `https://api.iconify.design/mdi/clock-outline.svg?color=${iconColor}`));
   }
@@ -256,10 +239,10 @@ export const buildMarkdown = (formData, currentTheme, badgeStyle, selectedSkills
     const pinnedContent = `<p align="center">
   <!-- Replace REPO_1 and REPO_2 with your actual repository names -->
   <a href="https://github.com/${username}?tab=repositories">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=${username}&repo=REPO_1&theme=${t.statsTheme}&hide_border=true" alt="Pinned Repo 1" width="48%"/>
+    <img src="https://github-readme-stats-fast.vercel.app/api/pin/?username=${username}&repo=REPO_1&theme=${t.statsTheme}&hide_border=true" alt="Pinned Repo 1" width="48%"/>
   </a>
   <a href="https://github.com/${username}?tab=repositories">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=${username}&repo=REPO_2&theme=${t.statsTheme}&hide_border=true" alt="Pinned Repo 2" width="48%"/>
+    <img src="https://github-readme-stats-fast.vercel.app/api/pin/?username=${username}&repo=REPO_2&theme=${t.statsTheme}&hide_border=true" alt="Pinned Repo 2" width="48%"/>
   </a>
 </p>
 <p align="center"><sub>✏️ Replace <code>REPO_1</code> and <code>REPO_2</code> above with your actual repository names</sub></p>`;
